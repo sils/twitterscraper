@@ -84,7 +84,6 @@ def query_tweets_once(query, limit=None, num_tweets=0):
     :return:      A list of twitterscraper.Tweet objects. You will get at least
                   ``limit`` number of items.
     """
-    logging.info("Querying {}".format(query))
     query = query.replace(' ', '%20').replace("#", "%23")
     pos = None
     tweets = []
@@ -96,10 +95,10 @@ def query_tweets_once(query, limit=None, num_tweets=0):
                 pos is None
             )
             if len(new_tweets) == 0:
+                logging.info("Got {} tweets for {}.".format(
+                    len(tweets), query))
                 return tweets
 
-            logging.info("Got {} tweets ({} new).".format(
-                len(tweets) + num_tweets, len(new_tweets)))
 
             tweets += new_tweets
 
@@ -108,6 +107,8 @@ def query_tweets_once(query, limit=None, num_tweets=0):
     except KeyboardInterrupt:
         logging.info("Program interrupted by user. Returning tweets gathered "
                      "so far...")
+        if not tweets:
+            raise
     except BaseException:
         logging.exception("An unknown error occurred! Returning tweets "
                           "gathered so far.")
